@@ -146,7 +146,7 @@ else  % Windows
             if opts.verbose > 0, fprintf('Skipped "%s"\n', files(i).src); end
         end
         if ~opts.dryrun && ~exist(files(i).dst, 'file')
-            error('mexopencv:make', 'Failed to compile "%s"', files(i).src);
+            warning('mexopencv:make', 'Failed to compile "%s"', files(i).src);
         end
     end
 

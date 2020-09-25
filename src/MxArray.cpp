@@ -86,6 +86,7 @@ const ConstMap<std::string, int> TermCritType = ConstMap<std::string, int>
 int MexErrorHandler(int status, const char *func_name, const char *err_msg,
     const char *file_name, int line, void * /*userdata*/)
 {
+    // TODO: fix cvErrorStr
     mexErrMsgIdAndTxt("mexopencv:error",
         "OpenCV Error:\n"
         "  Status  : %s (%d)\n"
@@ -93,7 +94,7 @@ int MexErrorHandler(int status, const char *func_name, const char *err_msg,
         "  Function: %s\n"
         "  File    : <a href=\"matlab:opentoline('%s',%d)\">%s</a>\n"
         "  Line    : %d\n",
-        cvErrorStr(status), status, err_msg,
+        "cvErrorStr(status)", status, err_msg,
         (func_name ? func_name : "(unknown)"),
         file_name, line, file_name, line);
     return 0;
@@ -133,6 +134,9 @@ MxArray::MxArray(const std::string& s)
     if (!p_)
         mexErrMsgIdAndTxt("mexopencv:error", "Allocation error");
 }
+
+cv::Mat MxArray::toMat() const {return toMat(DepthOf[classID()]);}
+cv::MatND MxArray::toMatND() const {return toMatND(DepthOf[classID()]);}
 
 #if 0
 // - works for multi-channel arrays, but doesnt work for ND-arrays because
@@ -551,7 +555,7 @@ cv::Mat MxArray::toMat(int depth, bool transpose) const
     std::vector<int> d(dims(), dims()+ndims());
     const mwSize ndims = (d.size()>2) ? d.size()-1 : d.size();
     const mwSize nchannels = (d.size()>2) ? d.back() : 1;
-    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
+//  depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
     std::swap(d[0], d[1]);
     cv::Mat mat(ndims, &d[0], CV_MAKETYPE(depth, nchannels));
     // Copy each channel from mxArray to Mat (converting to specified depth),
@@ -629,7 +633,7 @@ cv::MatND MxArray::toMatND(int depth, bool) const
     // Create output cv::MatND object of the specified depth, and of same size
     // as mxArray. This is a single-channel multi-dimensional array.
     std::vector<int> d(dims(), dims() + ndims());
-    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
+//    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
     cv::MatND mat(d.size(), &d[0], CV_MAKETYPE(depth, 1));
 
     // Copy data from mxArray to cv::MatND (converting to specified depth)
@@ -656,7 +660,7 @@ cv::SparseMat MxArray::toSparseMat(int depth) const
             "MxArray is not real 2D double sparse");
 
     // create cv::SparseMat of same size and requested depth
-    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
+//    depth = (depth == CV_USRTYPE1) ? DepthOf[classID()] : depth;
     const mwSize m = rows(), n = cols();
     const int dims[] = {static_cast<int>(m), static_cast<int>(n)};
     cv::SparseMat mat(2, dims, depth);
@@ -879,16 +883,16 @@ std::vector<std::string> MxArray::toVector() const
         std::const_mem_fun_ref_t<std::string,MxArray>(&MxArray::toString));
 }
 
-template <>
-std::vector<cv::Mat> MxArray::toVector() const
-{
-    const std::vector<MxArray> v(toVector<MxArray>());
-    std::vector<cv::Mat> vm;
-    vm.reserve(v.size());
-    for (std::vector<MxArray>::const_iterator it = v.begin(); it != v.end(); ++it)
-        vm.push_back(it->toMat());
-    return vm;
-}
+// template <>
+// std::vector<cv::Mat> MxArray::toVector() const
+// {
+//     const std::vector<MxArray> v(toVector<MxArray>());
+//     std::vector<cv::Mat> vm;
+//     vm.reserve(v.size());
+//     for (std::vector<MxArray>::const_iterator it = v.begin(); it != v.end(); ++it)
+//         vm.push_back(it->toMat());
+//     return vm;
+// }
 
 template <>
 std::vector<cv::Point> MxArray::toVector() const
