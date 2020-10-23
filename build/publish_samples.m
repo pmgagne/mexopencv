@@ -11,7 +11,7 @@ end
 %%
 % No need to add open_contrib because we copied it into +cv
 % addpath(fullfile(pwd, 'open_contrib'))
-addpath(pwd)
+
 %% Publish samples
 publish_files = dir(fullfile(pwd, 'samples', '*.m'));
 addpath(fullfile(pwd, 'samples'));
@@ -101,4 +101,9 @@ end
 rmpath(fullfile(pwd, 'opencv_contrib', 'samples'))
 
 %% Add searchable DB
+% NB: If a previous version of mexopencv is installed the builddocsearchdb
+%     may fail.
+
+rmpath(pwd);
+addpath(pwd);
 builddocsearchdb(fullfile(pwd, 'doc'));

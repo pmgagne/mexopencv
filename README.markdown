@@ -12,39 +12,28 @@ This fork was made in order to compile mexopencv with opencv 3.4.12.
 Compilation
 -----------
 
+Note there can be problems during compilation if a previous version of mexopencv toolbox is already installed. Please be sure to deinstall it before proceeding.
+
+
 Three steps:
 
 * Build OpenCV
 * Build Mexopencv
 * Packaging
 
-1. Opencv
-
 For MacOSX:
 
     cd build
     ./build_opencv_macos.sh
+    ./build_mex_macos.sh
 
 For Windows 10:
 
     cd build
     .\build_opencv_win64.bat
-
-In either case the result will be in ./dist
-
-2. Compiling Mexopencv
-
-For MacOSX:
-
-    ./build_mex_macos.sh
-
-For Windows 10:
-
     .\build_mex_win64.bat
 
-3. Packaging the toolbox
-
-In MATLAB, double-click on mexopencv_mac64.prj or mexopencv_win64.prj.
+To package the toolbox, in MATLAB, double-click on mexopencv_mac64.prj or mexopencv_win64.prj.
 
 mexopencv
 =========

@@ -18,8 +18,12 @@ mexopencv.make('opencv_path', 'opencv', 'opencv_contrib', true);
 
 % Documentation
 MDoc('-clean');
+MDoc('-all');
 MDoc('-wiki');
-MDoc;
+MDoc('-contents')
+MDoc('-helptoc')
+MDoc('-index')
+MDoc('-helptoc')
 
 % Group binaries in the same folder in order to only copy the dll once. 
 copyfile(fullfile(pwd, 'opencv_contrib', '+cv'), fullfile(pwd, '+cv'));
