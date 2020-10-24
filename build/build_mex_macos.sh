@@ -1,5 +1,4 @@
 export PKG_CONFIG_PATH=$(pwd)/dist/lib/pkgconfig
-cd mexopencv
 
 cp -R dist ../opencv
 
@@ -33,4 +32,6 @@ do
 done
 
 /Applications/MATLAB_R2019b.app/bin/matlab -nodesktop -sd . -r "addpath(pwd);addpath(fullfile(pwd, 'utils'));MDoc('-clean');MDoc('-wiki');MDoc; quit"
+
+cd build
 /Applications/MATLAB_R2019b.app/bin/matlab -nodesktop -sd . -r "publish_samples; quit"
